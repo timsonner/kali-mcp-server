@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "kali-mcp-gemini": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "--user",
+        "root",
+        "-v",
+        "/var/run/docker.sock:/var/run/docker.sock",
+        "kali-mcp-gemini"
+      ],
+      "trust": true
+    }
+  }
+}

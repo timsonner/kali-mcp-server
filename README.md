@@ -108,9 +108,16 @@ When running via the Gemini CLI, the agent can call these tools directly to inte
 
 ## Security Implications
 
-⚠️ **High Privileges Required** ⚠️
+⚠️ **Privileged Mode Required** ⚠️
 
-Because this setup binds `/var/run/docker.sock`:
-1.  The MCP server effectively has **root access** to the host system via the Docker daemon.
-2.  Any command executed inside the `kali-mcp-gemini` container can control your local Docker instance.
-3.  Ensure you trust the tools and agents using this server. Do not expose this server to untrusted networks or inputs.
+To support Docker-in-Docker (DinD), the MCP server container must be run with the `--privileged` flag. This allows the internal Docker daemon to manage containers and networking.
+
+### Isolation and Safety:
+1.  **Host Protection**: Unlike standard Docker-based tools that bind to `/var/run/docker.sock`, this server uses an internal Docker daemon. This means the Kali Linux container and its commands **cannot** see or control the host machine's Docker daemon or containers.
+2.  **Filesystem Isolation**: The Kali environment operates within its own virtualized filesystem inside the server container, providing a strong layer of isolation from the host OS.
+3.  **Restricted Scope**: While the server requires high privileges from the host to run its internal daemon, the *agent's* commands are restricted to the nested Kali environment.
+
+### Best Practices:
+- Ensure you trust the MCP server image before running it with `--privileged`.
+- Monitor the commands being executed via `kali-exec` to maintain oversight of agent activity.
+- Do not expose the MCP server's communication channel to untrusted networks.

@@ -43,10 +43,19 @@ class Program
         }
 
         // 1. Load Configuration
-        string settingsPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.gemini/settings.json"));
+        // Allow override via environment variable or command-line argument
+        string? settingsPath = Environment.GetEnvironmentVariable("GEMINI_SETTINGS_PATH");
+        
+        if (string.IsNullOrEmpty(settingsPath))
+        {
+            // Default: relative path from build output directory
+            settingsPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.gemini/settings.json"));
+        }
+        
         if (!File.Exists(settingsPath))
         {
             Console.Error.WriteLine($"Error: Settings file not found at {settingsPath}");
+            Console.Error.WriteLine("Tip: Set GEMINI_SETTINGS_PATH environment variable to specify a custom location.");
             return;
         }
 

@@ -243,6 +243,8 @@ public static class KaliLinuxToolset
         psi.ArgumentList.Add("-d");  // Detached mode
         psi.ArgumentList.Add("--name");
         psi.ArgumentList.Add(containerName);
+        psi.ArgumentList.Add("--network");
+        psi.ArgumentList.Add("host");
         psi.ArgumentList.Add("--workdir");
         psi.ArgumentList.Add("/root");
         // Add minimal capabilities or args if needed, but keeping simple for now.

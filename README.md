@@ -171,6 +171,34 @@ dotnet run --project KaliClient -- kali-container-restart
 export GEMINI_SETTINGS_PATH="/path/to/settings.json"
 ```
 
+## Replicating Vulnerability Assessments
+
+This repository includes a sample vulnerability assessment workflow against a vulnerable target (DVWA).
+
+### 1. Target Setup (DVWA)
+To replicate the findings in [Vulnerability_Report.md](Vulnerability_Report.md), start a DVWA container on your host machine:
+
+```bash
+docker run --rm -it -p 8080:80 vulnerables/web-dvwa
+```
+
+*Note: To access the DVWA container on `localhost`, ensure the MCP server is running with Host Networking enabled (default in provided configuration). Otherwise, use your host's IP address (e.g., `host.docker.internal` on Docker Desktop).*
+
+### 2. Session Workflow
+The following prompts were used with the Kali MCP agent to generate the report:
+
+1.  **Environment Prep**:
+    > "Install necessary security tools (nikto, hydra, wordlists, curl, net-tools) in the Kali container."
+
+2.  **Vulnerability Testing**:
+    > "Perform a vulnerability assessment of the DVWA target at http://localhost:8080. Test for SQL Injection, Command Injection, Brute Force, XSS, and Server Configuration issues."
+
+3.  **Reporting**:
+    > "Generate a comprehensive markdown report (Vulnerability_Report.md) summarizing the findings, including severity, evidence, and remediation steps."
+
+### 3. View Results
+See the generated report: **[Vulnerability_Report.md](Vulnerability_Report.md)**
+
 ## Troubleshooting
 
 **Docker daemon failed**: Verify `--privileged` flag in config, Docker Desktop running, check logs

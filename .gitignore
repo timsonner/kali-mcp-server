@@ -1,0 +1,25 @@
+# .NET
+bin/
+obj/
+*.user
+*.userosscache
+*.sln.doccache
+*.suo
+.vs/
+[Dd]ebug/
+[Rr]elease/
+publish/
+
+# VS Code
+.vscode/*
+!.vscode/mcp.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# MacOS
+.DS_Store
+
+# Gemnini CLI
+.gemini/tmp/

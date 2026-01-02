@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "kali-mcp-gemini": {
+    "Gemini-Kali-MCP-Server": {
       "command": "docker",
       "args": [
         "run",

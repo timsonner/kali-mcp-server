@@ -14,7 +14,7 @@
 
 ---
 
-## Phase 1: Rename Project Directory & Files
+## Phase 1: Rename Project Directory & Files ✅
 
 ```bash
 # Rename project directory
@@ -24,77 +24,87 @@ mv KaliMCPGemini KaliMCP
 mv KaliMCP/KaliMCPGemini.csproj KaliMCP/KaliMCP.csproj
 ```
 
-- [ ] Rename `KaliMCPGemini/` → `KaliMCP/`
-- [ ] Rename `KaliMCPGemini.csproj` → `KaliMCP.csproj`
+- [x] Rename `KaliMCPGemini/` → `KaliMCP/`
+- [x] Rename `KaliMCPGemini.csproj` → `KaliMCP.csproj`
 
 ---
 
-## Phase 2: Update Source Code
+## Phase 2: Update Source Code ✅
 
 ### KaliMCP/Program.cs
-- [ ] Change namespace `KaliMCPGemini` → `KaliMCP`
+- [x] Change namespace `KaliMCPGemini` → `KaliMCP` (no namespace in file, skipped)
 
 ### KaliMCP/Tools/KaliLinuxToolset.cs
-- [ ] Change namespace `KaliMCPGemini.Tools` → `KaliMCP.Tools`
-- [ ] Change `DefaultContainerName` from `kali-mcp-gemini-persistent` → `kali-mcp-persistent`
-- [ ] Update all `[Description]` attributes referencing container name
+- [x] Change namespace `KaliMCPGemini.Tools` → `KaliMCP.Tools`
+- [x] Change `DefaultContainerName` from `kali-mcp-gemini-persistent` → `kali-mcp-persistent`
+- [x] Update all `[Description]` attributes referencing container name
 
 ### KaliClient/Program.cs
-- [ ] Change container name `kali-mcp-gemini-persistent` → `kali-mcp-persistent` (2 occurrences)
+- [x] Change container name `kali-mcp-gemini-persistent` → `kali-mcp-persistent` (2 occurrences)
 - [ ] Optional: Rename `GEMINI_SETTINGS_PATH` → `MCP_SETTINGS_PATH`
 
 ---
 
-## Phase 3: Update Build/Runtime Files
+## Phase 3: Update Build/Runtime Files ✅
 
 ### Dockerfile
-- [ ] `COPY ["KaliMCPGemini/KaliMCPGemini.csproj", "KaliMCPGemini/"]` → `COPY ["KaliMCP/KaliMCP.csproj", "KaliMCP/"]`
-- [ ] `RUN dotnet restore "KaliMCPGemini/KaliMCPGemini.csproj"` → `RUN dotnet restore "KaliMCP/KaliMCP.csproj"`
-- [ ] `WORKDIR "/src/KaliMCPGemini"` → `WORKDIR "/src/KaliMCP"`
-- [ ] `RUN dotnet build "KaliMCPGemini.csproj"` → `RUN dotnet build "KaliMCP.csproj"`
-- [ ] `RUN dotnet publish "KaliMCPGemini.csproj"` → `RUN dotnet publish "KaliMCP.csproj"`
+- [x] `COPY ["KaliMCPGemini/KaliMCPGemini.csproj", "KaliMCPGemini/"]` → `COPY ["KaliMCP/KaliMCP.csproj", "KaliMCP/"]`
+- [x] `RUN dotnet restore "KaliMCPGemini/KaliMCPGemini.csproj"` → `RUN dotnet restore "KaliMCP/KaliMCP.csproj"`
+- [x] `WORKDIR "/src/KaliMCPGemini"` → `WORKDIR "/src/KaliMCP"`
+- [x] `RUN dotnet build "KaliMCPGemini.csproj"` → `RUN dotnet build "KaliMCP.csproj"`
+- [x] `RUN dotnet publish "KaliMCPGemini.csproj"` → `RUN dotnet publish "KaliMCP.csproj"`
 
 ### entrypoint.sh
-- [ ] `dotnet KaliMCPGemini.dll` → `dotnet KaliMCP.dll`
+- [x] `dotnet KaliMCPGemini.dll` → `dotnet KaliMCP.dll`
 
 ### run_mcp.sh
-- [ ] Update project path from `KaliMCPGemini/KaliMCPGemini.csproj` → `KaliMCP/KaliMCP.csproj`
+- [x] Update project path from `KaliMCPGemini/KaliMCPGemini.csproj` → `KaliMCP/KaliMCP.csproj`
 
 ---
 
-## Phase 4: Update Config Files
+## Phase 4: Update Config Files ✅
 
 ### .vscode/mcp.json
-- [ ] `"kali-mcp-gemini":` → `"kali-mcp":`
-- [ ] Image name `"kali-mcp-gemini"` → `"kali-mcp"`
+- [x] Image name `"kali-mcp-gemini"` → `"kali-mcp"`
 
 ### .copilot/mcp-config.json
-- [ ] Image name `"kali-mcp-gemini"` → `"kali-mcp"`
+- [x] Image name `"kali-mcp-gemini"` → `"kali-mcp"`
 
 ### .gemini/settings.json (keep file, update contents)
-- [ ] `"kali-mcp-gemini":` → `"kali-mcp":`
-- [ ] Image name `"kali-mcp-gemini"` → `"kali-mcp"`
+- [x] Image name `"kali-mcp-gemini"` → `"kali-mcp"`
 
 ---
 
-## Phase 5: Update Documentation
+## Phase 5: Update Documentation ✅
 
 ### README.md (~50 replacements)
-- [ ] Title: "Kali MCP Gemini Server" → "Kali MCP Server"
-- [ ] Description: Remove "for Gemini agents" → "for AI agents"
-- [ ] Project structure: `KaliMCPGemini/` references
-- [ ] All `kali-mcp-gemini` → `kali-mcp` (image name)
-- [ ] All `kali-mcp-gemini-persistent` → `kali-mcp-persistent` (container name)
-- [ ] Keep `.gemini/` folder references as-is
-- [ ] Keep "Gemini CLI" section name (it's the product name)
+- [x] Title: "Kali MCP Gemini Server" → "Kali MCP Server"
+- [x] Description: Remove "for Gemini agents" → "for AI agents"
+- [x] Project structure: `KaliMCPGemini/` references
+- [x] All `kali-mcp-gemini` → `kali-mcp` (image name)
+- [x] All `kali-mcp-gemini-persistent` → `kali-mcp-persistent` (container name)
+- [x] Keep `.gemini/` folder references as-is
+- [x] Keep "Gemini CLI" section name (it's the product name)
 
 ### .github/copilot-instructions.md (~20 replacements)
-- [ ] Title and references to project name
-- [ ] `KaliMCPGemini/` → `KaliMCP/`
-- [ ] Container/image names
+- [x] Title and references to project name
+- [x] `KaliMCPGemini/` → `KaliMCP/`
+- [x] Container/image names
 
 ### .gitignore
-- [ ] Keep `.gemini/tmp/` as-is (Gemini CLI requirement)
+- [x] Keep `.gemini/tmp/` as-is (Gemini CLI requirement)
+
+---
+
+## Phase 5.5: Simplify Container Name ✅
+
+Rename nested container from `kali-mcp-persistent` to `kali-mcp-container` for clarity.
+
+### Files Updated
+- [x] `KaliMCP/Tools/KaliLinuxToolset.cs` - `DefaultContainerName` constant + 4 `[Description]` attributes
+- [x] `KaliClient/Program.cs` - 2 occurrences
+- [x] `README.md` - 10 occurrences
+- [x] `.github/copilot-instructions.md` - 2 occurrences
 
 ---
 
@@ -123,14 +133,14 @@ cp .copilot/mcp-config.json ~/.copilot/mcp-config.json
 dotnet run --project KaliClient -- "echo 'Hello from Kali MCP'"
 ```
 
-- [ ] Stop and remove old containers
-- [ ] Decide: Keep or remove `kali_mcp_data` volume
-- [ ] Remove old Docker image
-- [ ] Build new Docker image as `kali-mcp`
-- [ ] Copy updated config to `~/.copilot/`
-- [ ] Test with KaliClient
-- [ ] Test with VS Code MCP
-- [ ] Test with Gemini CLI
+- [x] Stop and remove old containers
+- [x] Decide: Keep or remove `kali_mcp_data` volume (removed)
+- [x] Remove old Docker image
+- [x] Build new Docker image as `kali-mcp`
+- [x] Copy updated config to `~/.copilot/`
+- [x] Test with KaliClient
+- [x] Test with VS Code MCP
+- [x] Test with Gemini CLI
 
 ---
 
@@ -143,7 +153,7 @@ git commit -m "refactor: rename project from KaliMCPGemini to KaliMCP
 - Remove Gemini-specific naming throughout codebase
 - Rename project directory and namespace
 - Update Docker image name: kali-mcp-gemini → kali-mcp  
-- Update container name: kali-mcp-gemini-persistent → kali-mcp-persistent
+- Update container name: kali-mcp-gemini-persistent → kali-mcp-container
 - Update all config files and documentation
 
 BREAKING CHANGE: Users must rebuild Docker image with new name"

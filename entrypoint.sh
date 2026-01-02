@@ -24,4 +24,4 @@ if [ -n "$KALI_IMAGE" ]; then
 fi
 
 # Execute the MCP server
-dotnet KaliMCPGemini.dll
+dotnet KaliMCP.dll

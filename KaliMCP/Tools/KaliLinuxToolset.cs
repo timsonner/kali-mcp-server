@@ -3,13 +3,13 @@ using System.Diagnostics;
 using System.Text;
 using ModelContextProtocol.Server;
 
-namespace KaliMCPGemini.Tools;
+namespace KaliMCP.Tools;
 
 [McpServerToolType]
 public static class KaliLinuxToolset
 {
     private static string DefaultImage => Environment.GetEnvironmentVariable("KALI_IMAGE") ?? "kalilinux/kali-rolling";
-    private const string DefaultContainerName = "kali-mcp-gemini-persistent";
+    private const string DefaultContainerName = "kali-mcp-container";
     private static readonly object _lockObject = new object();
     private static readonly SemaphoreSlim _containerSemaphore = new SemaphoreSlim(1, 1);
 
@@ -17,7 +17,7 @@ public static class KaliLinuxToolset
     public static async Task<string> RunCommandAsync(
         [Description("The shell command to execute inside the container. The command is passed to bash -lc.")] string command,
         [Description("The Docker image to use. Defaults to kalilinux/kali-rolling.")] string? image,
-        [Description("The container name to use. Defaults to kali-mcp-gemini-persistent.")] string? containerName,
+        [Description("The container name to use. Defaults to kali-mcp-container.")] string? containerName,
         CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(command))
@@ -37,7 +37,7 @@ public static class KaliLinuxToolset
 
     [McpServerTool(Name = "kali-container-status"), Description("Check the status of the persistent Kali Linux container.")]
     public static async Task<string> GetContainerStatusAsync(
-        [Description("The container name to check. Defaults to kali-mcp-gemini-persistent.")] string? containerName,
+        [Description("The container name to check. Defaults to kali-mcp-container.")] string? containerName,
         CancellationToken cancellationToken)
     {
         string containerNameToUse = string.IsNullOrWhiteSpace(containerName) ? DefaultContainerName : containerName;
@@ -72,7 +72,7 @@ public static class KaliLinuxToolset
     [McpServerTool(Name = "kali-container-restart"), Description("Restart the persistent Kali Linux container (useful if it becomes unresponsive).")]
     public static async Task<string> RestartContainerAsync(
         [Description("The Docker image to use. Defaults to kalilinux/kali-rolling.")] string? image,
-        [Description("The container name to restart. Defaults to kali-mcp-gemini-persistent.")] string? containerName,
+        [Description("The container name to restart. Defaults to kali-mcp-container.")] string? containerName,
         CancellationToken cancellationToken)
     {
         string dockerImage = string.IsNullOrWhiteSpace(image) ? DefaultImage : image;
@@ -92,7 +92,7 @@ public static class KaliLinuxToolset
 
     [McpServerTool(Name = "kali-container-stop"), Description("Stop the persistent Kali Linux container to free up system resources.")]
     public static async Task<string> StopContainerAsync(
-        [Description("The container name to stop. Defaults to kali-mcp-gemini-persistent.")] string? containerName,
+        [Description("The container name to stop. Defaults to kali-mcp-container.")] string? containerName,
         [Description("Whether to also remove the container after stopping. If false, the container can be restarted later. Defaults to false.")] bool removeContainer = false,
         CancellationToken cancellationToken = default)
     {

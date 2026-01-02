@@ -11,7 +11,7 @@
         "host",
         "-v",
         "kali_mcp_data:/var/lib/docker",
-        "kali-mcp-gemini"
+        "kali-mcp"
       ],
       "trust": true
     }

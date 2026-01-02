@@ -1,4 +1,4 @@
-# Copilot Instructions for Kali MCP Gemini Server
+# Copilot Instructions for Kali MCP Server
 
 ## Project Overview
 This is a .NET 9.0 Model Context Protocol (MCP) server that provides AI agents with secure access to a persistent Kali Linux environment via Docker-in-Docker (DinD). The server exposes Kali Linux tools through MCP protocol for security testing and penetration testing workflows.
@@ -6,15 +6,15 @@ This is a .NET 9.0 Model Context Protocol (MCP) server that provides AI agents w
 ## Architecture
 
 ### Three-Layer System
-1. **MCP Server** (`KaliMCPGemini/`): .NET host running MCP protocol over stdio
+1. **MCP Server** (`KaliMCP/`): .NET host running MCP protocol over stdio
 2. **Docker-in-Docker Container**: Server runs WITH `--privileged` flag and hosts internal Docker daemon
-3. **Persistent Kali Container**: Nested container (`kali-mcp-gemini-persistent`) where commands execute
+3. **Persistent Kali Container**: Nested container (`kali-mcp-container`) where commands execute
 
 **Security Model**: The nested architecture isolates the Kali environment from the host Docker daemon. Commands run in the nested Kali container cannot access the host's Docker socket or containers.
 
 ### Key Components
-- **`KaliMCPGemini/Program.cs`**: MCP server entry point using Microsoft.Extensions.Hosting with stdio transport
-- **`KaliMCPGemini/Tools/KaliLinuxToolset.cs`**: Four MCP tools decorated with `[McpServerTool]` attributes
+- **`KaliMCP/Program.cs`**: MCP server entry point using Microsoft.Extensions.Hosting with stdio transport
+- **`KaliMCP/Tools/KaliLinuxToolset.cs`**: Four MCP tools decorated with `[McpServerTool]` attributes
 - **`KaliClient/`**: Reference client demonstrating JSON-RPC 2.0 communication over stdio
 - **`Dockerfile`**: Multi-stage build installing .NET runtime + Docker Engine (DinD)
 - **`entrypoint.sh`**: Starts internal `dockerd` daemon before launching MCP server
@@ -40,7 +40,7 @@ Executes commands in persistent Kali container using `docker exec {container} ba
 **Persistence**: Uses singleton pattern with `SemaphoreSlim` (`_containerSemaphore`) to ensure container lifecycle thread-safety. Container auto-starts if stopped, auto-creates if missing.
 
 **Default Values**:
-- Container name: `kali-mcp-gemini-persistent`
+- Container name: `kali-mcp-container`
 - Image: `kalilinux/kali-rolling`
 
 ### Container Management Tools
@@ -54,7 +54,7 @@ Executes commands in persistent Kali container using `docker exec {container} ba
 
 **Build Docker Image** (required before first use):
 ```bash
-docker build -t kali-mcp-gemini .
+docker build -t kali-mcp .
 docker pull kalilinux/kali-rolling
 ```
 
@@ -117,9 +117,9 @@ Tool methods throw `InvalidOperationException` with Docker error output. MCP fra
 ```json
 {
   "mcpServers": {
-    "kali-mcp-gemini": {
+    "kali-mcp": {
       "command": "docker",
-      "args": ["run", "--rm", "-i", "--privileged", "kali-mcp-gemini"],
+      "args": ["run", "--rm", "-i", "--privileged", "kali-mcp"],
       "trust": true
     }
   }
@@ -138,7 +138,7 @@ Both MUST include `--privileged` flag for DinD to function.
 3. Use `[Description("...")]` on each parameter
 4. Return `Task<string>` (text response) or `Task<object>` (structured data)
 5. Accept `CancellationToken cancellationToken` as last parameter
-6. Rebuild Docker image: `docker build -t kali-mcp-gemini .`
+6. Rebuild Docker image: `docker build -t kali-mcp .`
 
 **No registration code needed** - `WithToolsFromAssembly()` handles discovery.
 

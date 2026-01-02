@@ -1,6 +1,6 @@
-# Kali MCP Gemini Server
+# Kali MCP Server
 
-A .NET-based [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server that provides a persistent Kali Linux environment for Gemini agents.
+A .NET-based [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server that provides a persistent Kali Linux environment for AI agents.
 
 ## Table of Contents
 
@@ -39,8 +39,8 @@ A .NET-based [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) se
 │   └── settings.json
 ├── .vscode/
 │   └── mcp.json
-├── KaliMCPGemini/
-│   ├── KaliMCPGemini.csproj
+├── KaliMCP/
+│   ├── KaliMCP.csproj
 │   ├── Program.cs
 │   └── Tools/
 │       └── KaliLinuxToolset.cs
@@ -49,7 +49,7 @@ A .NET-based [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) se
     └── Program.cs
 ```
 
-- **`KaliMCPGemini/`**: The core MCP server implementation in C#
+- **`KaliMCP/`**: The core MCP server implementation in C#
 - **`KaliClient/`**: A reference .NET client that demonstrates MCP protocol usage
 - **`Dockerfile`**: Multi-stage build for the MCP server with Docker-in-Docker support
 - **`.copilot/mcp-config.json`**: GitHub Copilot CLI configuration (copy to `~/.copilot/`)
@@ -75,10 +75,10 @@ The MCP server uses a **three-layer nesting** model:
 │      │                                                          │
 │      ▼                                                          │
 │  ┌──────────────────────────────────────────────────────────┐   │
-│  │  MCP SERVER CONTAINER (kali-mcp-gemini image)            │   │
+│  │  MCP SERVER CONTAINER (kali-mcp image)                   │   │
 │  │  - Runs .NET MCP server + internal Docker daemon         │   │
 │  │  - Started with: --privileged --network host             │   │
-│  │  └── docker ps shows: "kali-mcp-gemini-persistent"       │   │
+│  │  └── docker ps shows: "kali-mcp-container"              │   │
 │  │      │                                                   │   │
 │  │      ▼                                                   │   │
 │  │  ┌───────────────────────────────────────────────────┐   │   │
@@ -92,26 +92,26 @@ The MCP server uses a **three-layer nesting** model:
 
 **Key Points:**
 
-1. **Host Level**: You see the MCP server container (random name like `quizzical_volhard`) running the `kali-mcp-gemini` image.
+1. **Host Level**: You see the MCP server container (random name like `quizzical_volhard`) running the `kali-mcp` image.
 
-2. **MCP Server Level**: Inside that container, an internal Docker daemon manages another container called `kali-mcp-gemini-persistent`.
+2. **MCP Server Level**: Inside that container, an internal Docker daemon manages another container called `kali-mcp-container`.
 
 3. **Kali Level**: This innermost container is where your security tools run and where `kali-exec` commands execute.
 
 **Why This Matters:**
 
-- Running `docker exec kali-mcp-gemini-persistent ...` from your host **does not work** because that container exists inside the MCP server's Docker daemon, not your host's.
+- Running `docker exec kali-mcp-container ...` from your host **does not work** because that container exists inside the MCP server's Docker daemon, not your host's.
 - To interact with the nested Kali container from your host terminal, you must chain commands through the MCP server container:
 
 ```bash
 # Find the MCP server container name
-docker ps --filter ancestor=kali-mcp-gemini --format "{{.Names}}"
+docker ps --filter ancestor=kali-mcp --format "{{.Names}}"
 
 # Execute commands in the nested Kali container
-docker exec <mcp-container-name> docker exec kali-mcp-gemini-persistent <command>
+docker exec <mcp-container-name> docker exec kali-mcp-container <command>
 
 # Or using a filter (auto-finds the container):
-docker exec $(docker ps -q --filter ancestor=kali-mcp-gemini) docker exec kali-mcp-gemini-persistent whoami
+docker exec $(docker ps -q --filter ancestor=kali-mcp) docker exec kali-mcp-container whoami
 ```
 
 ## Available MCP Tools
@@ -121,7 +121,7 @@ Four MCP protocol tools for container management and command execution:
 **`kali-exec`** - Execute commands in Kali container
 - `command` (required): Bash command to run
 - `image` (optional): Docker image (default: `kalilinux/kali-rolling`)
-- `containerName` (optional): Container name (default: `kali-mcp-gemini-persistent`)
+- `containerName` (optional): Container name (default: `kali-mcp-container`)
 
 **`kali-container-status`** - Check container status
 - `containerName` (optional)
@@ -144,7 +144,7 @@ dotnet --version  # Should be 9.0+
 docker ps         # Should succeed
 
 # Build MCP server image
-docker build -t kali-mcp-gemini .
+docker build -t kali-mcp .
 
 # Pull Kali image
 docker pull kalilinux/kali-rolling
@@ -160,7 +160,7 @@ dotnet --version  # Should be 9.0.0 or higher
 docker ps         # Should succeed without errors
 
 # 2. Build the Docker image
-docker build -t kali-mcp-gemini .
+docker build -t kali-mcp .
 
 # 3. Pull the Kali Linux image
 docker pull kalilinux/kali-rolling
@@ -169,7 +169,7 @@ docker pull kalilinux/kali-rolling
 dotnet run --project KaliClient -- "echo 'Hello from Kali'"
 
 # Expected output should show:
-# Container: kali-mcp-gemini-persistent
+# Container: kali-mcp-container
 # Command: echo 'Hello from Kali'
 # ExitCode: 0
 # Stdout:
@@ -343,38 +343,38 @@ If you need to interact with the nested Kali container directly from your host t
 **1. Find the MCP Server Container**
 ```bash
 # Get the MCP server container name (changes each restart)
-docker ps --filter ancestor=kali-mcp-gemini --format "{{.Names}}"
+docker ps --filter ancestor=kali-mcp --format "{{.Names}}"
 # Example output: quizzical_volhard
 ```
 
 **2. Copy VPN Config (Host → MCP Server → Kali)**
 ```bash
 # Copy to MCP server container first, then to nested Kali container
-docker cp ~/Downloads/your-vpn.ovpn $(docker ps -q --filter ancestor=kali-mcp-gemini):/tmp/vpn.ovpn
+docker cp ~/Downloads/your-vpn.ovpn $(docker ps -q --filter ancestor=kali-mcp):/tmp/vpn.ovpn
 
-docker exec $(docker ps -q --filter ancestor=kali-mcp-gemini) \
-  docker cp /tmp/vpn.ovpn kali-mcp-gemini-persistent:/root/vpn.ovpn
+docker exec $(docker ps -q --filter ancestor=kali-mcp) \
+  docker cp /tmp/vpn.ovpn kali-mcp-container:/root/vpn.ovpn
 ```
 
 **3. Install OpenVPN in Nested Container**
 ```bash
-docker exec $(docker ps -q --filter ancestor=kali-mcp-gemini) \
-  docker exec kali-mcp-gemini-persistent \
+docker exec $(docker ps -q --filter ancestor=kali-mcp) \
+  docker exec kali-mcp-container \
   bash -c "apt-get update && apt-get install -y openvpn"
 ```
 
 **4. Connect to VPN (Interactive)**
 ```bash
-docker exec -it $(docker ps -q --filter ancestor=kali-mcp-gemini) \
-  docker exec -it kali-mcp-gemini-persistent \
+docker exec -it $(docker ps -q --filter ancestor=kali-mcp) \
+  docker exec -it kali-mcp-container \
   openvpn --config /root/vpn.ovpn
 ```
 
 **5. Verify Connection**
 In another terminal:
 ```bash
-docker exec $(docker ps -q --filter ancestor=kali-mcp-gemini) \
-  docker exec kali-mcp-gemini-persistent \
+docker exec $(docker ps -q --filter ancestor=kali-mcp) \
+  docker exec kali-mcp-container \
   ip addr show tun0
 ```
 

@@ -28,7 +28,7 @@ class Program
             // These tools take optional args, but we'll stick to defaults for simplicity
             toolArguments = new 
             { 
-                containerName = "kali-mcp-gemini-persistent"
+                containerName = "kali-mcp-container"
             };
         }
         else
@@ -38,7 +38,7 @@ class Program
             { 
                 command = inputArg,
                 image = "kalilinux/kali-rolling",
-                containerName = "kali-mcp-gemini-persistent"
+                containerName = "kali-mcp-container"
             };
         }
 

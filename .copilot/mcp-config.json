@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "Copilot-Kali-MCP": {
+      "type": "stdio",
+      "command": "docker",
+      "tools": [
+        "*"
+      ],
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "--privileged",
+        "--network",
+        "host",
+        "-v",
+        "kali_mcp_data:/var/lib/docker",
+        "kali-mcp-gemini"
+      ]
+    }
+  }
+}

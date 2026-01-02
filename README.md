@@ -2,6 +2,29 @@
 
 A .NET-based [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server that provides a persistent Kali Linux environment for Gemini agents.
 
+## Table of Contents
+
+- [Project Structure](#project-structure)
+- [Architecture: Docker-in-Docker (DinD)](#architecture-docker-in-docker-dind)
+  - [Understanding the Nested Container Architecture](#understanding-the-nested-container-architecture)
+- [Available MCP Tools](#available-mcp-tools)
+- [Setup](#setup)
+- [Quick Start](#quick-start)
+- [Kali Linux Tools](#kali-linux-tools)
+- [Running the Server](#running-the-server)
+- [Usage](#usage)
+  - [Gemini CLI](#gemini-cli)
+  - [VS Code](#vs-code)
+  - [GitHub Copilot CLI](#github-copilot-cli)
+  - [Reference Client](#reference-client)
+- [Replicating Vulnerability Assessments](#replicating-vulnerability-assessments)
+  - [Example 1: DVWA (Local Docker)](#example-1-dvwa-local-docker)
+  - [Example 2: Pyrat (TryHackMe)](#example-2-pyrat-tryhackme)
+- [Connect container to VPN](#connect-container-to-vpn)
+  - [Manual VPN Setup (Direct Docker Access)](#manual-vpn-setup-direct-docker-access)
+- [Troubleshooting](#troubleshooting)
+- [Security](#security)
+
 ## Project Structure
 
 ```
